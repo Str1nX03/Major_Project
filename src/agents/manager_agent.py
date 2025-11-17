@@ -79,7 +79,19 @@ class ManagerAgent:
 
     def _generate_study_links(self, state: AgentState) -> str:
 
-        pass
+        topic = state["topic"]
+        subject = state["subject"]
+        standard = state["standard"]
+
+        prompt = f"""
+
+        Give me a study materials and general intro on the topic: {topic} from the subject: {subject} for the student of standard: {standard}.
+
+        """
+
+        response = self.tool[0].invoke([SystemMessage(content=prompt)])
+
+        return {"study_links": response}
 
     def _lesson_pre_ideas(self, state: AgentState) -> str:
 
