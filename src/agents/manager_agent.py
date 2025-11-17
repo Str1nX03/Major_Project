@@ -15,7 +15,6 @@ class AgentState(TypedDict):
     instructions: str
     topic_intro: str
     study_links: str
-    lesson_pre_ideas: str
     topic: str
 
 class ManagerAgent:
@@ -38,7 +37,6 @@ class ManagerAgent:
         graph.add_node("generate_instructions", self._generate_instructions)
         graph.add_node("user_interaction", self._user_interaction)
         graph.add_node("generate_study_links", self._generate_study_links)
-        graph.add_node("lesson_pre_ideas", self._lesson_pre_ideas)
 
         return graph.compile()
     
@@ -92,10 +90,6 @@ class ManagerAgent:
         response = self.tool[0].invoke([SystemMessage(content=prompt)])
 
         return {"study_links": response}
-
-    def _lesson_pre_ideas(self, state: AgentState) -> str:
-
-        pass
 
     def run(self, topic: str, subject: str, standard: int):
 
