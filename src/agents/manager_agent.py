@@ -42,34 +42,44 @@ class ManagerAgent:
     
     def _user_interaction(self, state: AgentState) -> dict:
 
-        topic = state["topic"]
-        subject = state["subject"]
-        standard = state["standard"]
-        study_links = state["study_links"]
+        try:
 
-        prompt = f"""
+            logging.info("Agent is generating initial contents for the user...")
 
-        You are a teacher. Your task is to provide the instructions to the user for a particular topic.
-        You will give a general idea about the topic like how difficult it is and what are the pre-requisites to study the topic.
-        You will also give a brief introduction on this topic to the user.
-        
-        These are the general instructions provided by the user:-
+            topic = state["topic"]
+            subject = state["subject"]
+            standard = state["standard"]
+            study_links = state["study_links"]
 
-        1. The topic that is needed to be taught to the user is :- {topic}
-        2. The subject that is needed to be taught to the user is :- {subject}
-        3. The standard that the user currently is in with respect to Indian standard (School) :- {standard}
+            prompt = f"""
 
-        These are the study materials and general intro provided by the user:-
+            You are a teacher. Your task is to provide the instructions to the user for a particular topic.
+            You will give a general idea about the topic like how difficult it is and what are the pre-requisites to study the topic.
+            You will also give a brief introduction on this topic to the user.
+            
+            These are the general instructions provided by the user:-
 
-        {study_links}
+            1. The topic that is needed to be taught to the user is :- {topic}
+            2. The subject that is needed to be taught to the user is :- {subject}
+            3. The standard that the user currently is in with respect to Indian standard (School) :- {standard}
 
-        So provide the links of the study materials and intro to the study materials as well along with the general intro to the topic.
+            These are the study materials and general intro provided by the user:-
 
-        """
+            {study_links}
 
-        response = self.llm.invoke([SystemMessage(content=prompt)])
+            So provide the links of the study materials and intro to the study materials as well along with the general intro to the topic.
 
-        return {"topic_intro": response.content}
+            """
+
+            response = self.llm.invoke([SystemMessage(content=prompt)])
+
+            logging.info("Agent has generated initial contents for the user...")
+
+            return {"topic_intro": response.content}
+
+        except Exception as e:
+
+            raise CustomException(e, sys)
 
     def _generate_instructions(self, state: AgentState) -> str:
 
@@ -77,19 +87,29 @@ class ManagerAgent:
 
     def _generate_study_links(self, state: AgentState) -> str:
 
-        topic = state["topic"]
-        subject = state["subject"]
-        standard = state["standard"]
+        try:
 
-        prompt = f"""
+            logging.info("Agent is generating study materials and general intro for the user...")
 
-        Give me a study materials and general intro on the topic: {topic} from the subject: {subject} for the student of standard: {standard}.
+            topic = state["topic"]
+            subject = state["subject"]
+            standard = state["standard"]
 
-        """
+            prompt = f"""
 
-        response = self.tool[0].invoke([SystemMessage(content=prompt)])
+            Give me a study materials and general intro on the topic: {topic} from the subject: {subject} for the student of standard: {standard}.
 
-        return {"study_links": response}
+            """
+
+            response = self.tool[0].invoke([SystemMessage(content=prompt)])
+
+            logging.info("Agent has generated study materials and general intro for the user...")
+
+            return {"study_links": response}
+        
+        except Exception as e:
+
+            raise CustomException(e, sys)
 
     def run(self, topic: str, subject: str, standard: int):
 
