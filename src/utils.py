@@ -1,9 +1,8 @@
 from langchain_groq.chat_models import ChatGroq
 from src.logger import logging
 from src.exception import CustomException
-from dotenv import load_dotenv
 import sys
-load_dotenv()
+import os
 
 def get_llm():
 
@@ -13,7 +12,8 @@ def get_llm():
 
         llm = ChatGroq(
             model = "llama-3.1-8b-instant", 
-            temperature = 0.1
+            temperature = 0.1,
+            api_key = os.getenv("GROQ_API_KEY")
         )
 
         logging.info("LLM initialized")

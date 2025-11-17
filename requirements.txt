@@ -4,5 +4,5 @@ langchain_community
 langchain_groq
 langgraph
 flask
-python-dotenv
 ipykernel
+langchain_tavily
