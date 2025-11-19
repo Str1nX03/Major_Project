@@ -24,7 +24,7 @@ class ManagerAgent:
         self.llm = get_llm()
         self.graph = self._build_graph()
         self.tool = [TavilySearch(
-            max_results = 3,
+            max_results = 5,
             topic = "general",
             api_key = os.getenv("TAVILY_API_KEY")
         )]
