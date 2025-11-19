@@ -83,7 +83,13 @@ class ManagerAgent:
 
     def _generate_instructions(self, state: AgentState) -> str:
 
-        pass
+        try:
+
+            pass
+
+        except Exception as e:
+
+            raise CustomException(e, sys)
 
     def _generate_study_links(self, state: AgentState) -> str:
 
