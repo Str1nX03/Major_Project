@@ -38,6 +38,11 @@ class ManagerAgent:
         graph.add_node("user_interaction", self._user_interaction)
         graph.add_node("generate_study_links", self._generate_study_links)
 
+        graph.add_edge(START, "generate_study_links")
+        graph.add_edge("generate_study_links", "user_interaction")
+        graph.add_edge("user_interaction", "generate_instructions")
+        graph.add_edge("generate_instructions", END)
+
         return graph.compile()
     
     def _user_interaction(self, state: AgentState) -> dict:
@@ -81,11 +86,46 @@ class ManagerAgent:
 
             raise CustomException(e, sys)
 
-    def _generate_instructions(self, state: AgentState) -> str:
+    def _generate_instructions(self, state: AgentState) -> dict:
 
         try:
+            
+            logging.info("Agent is generating instructions for the agents...")
 
-            pass
+            standard = state["standard"]
+            subject = state["subject"]
+            topic_intro = state["topic_intro"]
+            study_links = state["study_links"]
+            topic = state["topic"]
+
+            prompt = f"""
+
+            You are an agent manager and your task is to write a detailed prompt for an agent whose task is to plan lessons based on:-
+
+            1. The topic that is needed to be taught to the user is :- {topic}
+            2. The subject that is needed to be taught to the user is :- {subject}
+            3. The standard that the user currently is in with respect to Indian standard (School) :- {standard}
+            4. The study materials and general intro provided for the user:- {study_links}
+            5. The general intro provided for the user: {topic_intro}
+
+            You will tell the planning agent to plan for the lessons in such a way that the user will be able to understand the topic from scratch.
+            The planning should start with the roots and fundamental of the topic.
+            It should also include the prerequisite for the topic which is needed to be taught to the user to make the user understand the topics better.
+            It should plan the lessons in step by step manner like lectures for the lessons.
+            Lessons are to be taught in such a way that after completing each lesson, next lesson can be started based on the planned lessons like each level of a game.
+            You must include the study links url ({study_links}) so that the user will be able to click on the links and get to the study materials..
+            The planning should also include the study materials and general intro to the topic.
+            Give the agents instructions to make the lessons plan as comprehensive as they want to make the user learning pace a bit slow and more detailed so that the user will get time to be comfortable with the topics.
+            Prompt the agents to make the lessons from 10-50 lessons big based on the difficulty of the topic.
+
+
+            """
+
+            response = self.llm.invoke([SystemMessage(content=prompt)])
+
+            logging.info("Agent has generated instructions for the agents...")
+
+            return {"instructions": response.content}
 
         except Exception as e:
 
@@ -103,11 +143,11 @@ class ManagerAgent:
 
             prompt = f"""
 
-            Give me a study materials and general intro on the topic: {topic} from the subject: {subject} for the student of standard: {standard}.
+            Give me a study materials, youtube video links and general intro on the topic: {topic} from the subject: {subject} for the student of standard: {standard}.
 
             """
 
-            response = self.tool[0].invoke([SystemMessage(content=prompt)])
+            response = self.tool[0].invoke(prompt)
 
             logging.info("Agent has generated study materials and general intro for the user...")
 
@@ -128,7 +168,7 @@ class ManagerAgent:
 
             logging.info("Manager Agent's work Finished and instructions are ready to be sent to other agents...")
 
-            return final_state["instructions"]
+            return final_state
 
         except Exception as e:
 
