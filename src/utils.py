@@ -6,6 +6,10 @@ import os
 
 def get_llm():
 
+    if os.getenv("GROQ_API_KEY") is None:
+
+        raise Exception("GROQ_API_KEY is not set")
+
     try:
 
         logging.info("Initializing LLM")
@@ -20,7 +24,22 @@ def get_llm():
 
         return llm
     
-    except Exception as e:
+    except:
 
-        raise CustomException(e, sys)
-    
+        try:
+
+            logging.info("Initializing another LLM")
+
+            llm = ChatGroq(
+                model = "llama-3.3-70b-versatile", 
+                temperature = 0.1,
+                api_key = os.getenv("GROQ_API_KEY")
+            )
+
+            logging.info("A different LLM initialized")
+
+            return llm
+        
+        except Exception as e:
+
+            raise CustomException(e, sys)
