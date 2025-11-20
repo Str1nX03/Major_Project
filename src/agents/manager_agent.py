@@ -43,7 +43,6 @@ class ManagerAgent:
         graph.add_edge("generate_study_links", "user_interaction")
         graph.add_edge("user_interaction", "generate_instructions")
         graph.add_edge("generate_instructions", END)
-
         return graph.compile()
     
     def _user_interaction(self, state: AgentState) -> dict:
@@ -123,7 +122,7 @@ class ManagerAgent:
 
             """
 
-            response = self.llm.invoke([SystemMessage(content=prompt)])
+            response = self.llm.invoke(prompt)
 
             logging.info("Agent has generated instructions for the agents...")
 
@@ -167,13 +166,11 @@ class ManagerAgent:
 
             initial_state = {"standard": standard, "subject": subject, "topic": topic}
             final_state = self.graph.invoke(input = initial_state)
-            planning_agent = PlannerAgent()
-            sended_instructions = planning_agent.run(instructions = final_state["instructions"], standard = standard, subject = subject, topic = topic)
 
-            logging.info("Manager Agent's work Finished and instructions are sent to planning agent...")
+            logging.info("Manager Agent's work Finished...")
 
-            return final_state
-
+            return final_state["instructions"]
+        
         except Exception as e:
 
             raise CustomException(e, sys)
