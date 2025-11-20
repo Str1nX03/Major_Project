@@ -10,6 +10,7 @@ import os
 class AgentState(TypedDict):
 
     instructions: str
+    study_links: list
     lessons: dict
 
 class PlannerAgent:
@@ -24,22 +25,26 @@ class PlannerAgent:
             api_key = os.getenv("TAVILY_API_KEY")
         )]
         
-    def _get_links_info(self, state: AgentState) -> dict:
+    def _get_study_contents(self, state: AgentState) -> dict:
 
         pass
 
     def _build_graph(self):
 
-        pass
+        graph = StateGraph(AgentState)
+        
+        # Graph Logic and Structure will go here
+        
+        return graph.compile()
 
-    def run(self, instructions: str):
+    def run(self, instructions: str, standard: int, subject: str, topic: str):
 
         try: 
             
             logging.info("Running Planning Agent...")
 
-            # initial_state = {"instructions": instructions}
-            # final_state = self.graph.invoke(input = initial_state)
+            initial_state = {"instructions": instructions, "standard": standard, "subject": subject, "topic": topic}
+            final_state = self.graph.invoke(input = initial_state)
 
             logging.info("Planning Agent's work Finished...")
 
