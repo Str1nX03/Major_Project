@@ -10,6 +10,7 @@ import os
 class AgentState(TypedDict):
 
     instructions: str
+    study_links: list
     lessons: dict
 
 class PlannerAgent:
@@ -32,14 +33,14 @@ class PlannerAgent:
 
         pass
 
-    def run(self, instructions: str):
+    def run(self, instructions: str, study_links: list):
 
         try: 
             
             logging.info("Running Planning Agent...")
 
-            # initial_state = {"instructions": instructions}
-            # final_state = self.graph.invoke(input = initial_state)
+            initial_state = {"instructions": instructions, "study_links": study_links}
+            final_state = self.graph.invoke(input = initial_state)
 
             logging.info("Planning Agent's work Finished...")
 

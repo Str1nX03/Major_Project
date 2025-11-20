@@ -168,7 +168,7 @@ class ManagerAgent:
             initial_state = {"standard": standard, "subject": subject, "topic": topic}
             final_state = self.graph.invoke(input = initial_state)
             planning_agent = PlannerAgent()
-            sended_instructions = planning_agent.run(final_state["instructions"])
+            sended_instructions = planning_agent.run(instructions = final_state["instructions"], study_links = final_state["study_links"]["results"])
 
             logging.info("Manager Agent's work Finished and instructions are sent to planning agent...")
 
