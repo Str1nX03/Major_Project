@@ -27,19 +27,20 @@ class PlannerAgent:
         
     def _get_links_info(self, state: AgentState) -> dict:
 
-        pass
+        study_links = state["study_links"]
+        
 
     def _build_graph(self):
 
         pass
 
-    def run(self, instructions: str, study_links: list):
+    def run(self, instructions: str):
 
         try: 
             
             logging.info("Running Planning Agent...")
 
-            initial_state = {"instructions": instructions, "study_links": study_links}
+            initial_state = {"instructions": instructions}
             final_state = self.graph.invoke(input = initial_state)
 
             logging.info("Planning Agent's work Finished...")
