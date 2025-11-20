@@ -17,7 +17,7 @@ class AgentState(TypedDict):
     study_links: str
     topic: str
 
-class ManagerAgent:
+class AssistantAgent:
 
     def __init__(self):
 
