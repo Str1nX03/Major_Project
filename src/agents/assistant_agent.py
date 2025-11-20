@@ -4,7 +4,6 @@ from src.exception import CustomException
 from langgraph.graph import StateGraph, END, START
 from langchain_tavily import TavilySearch
 from langchain_core.messages import SystemMessage
-from src.agents.planning_agent import PlannerAgent
 import sys
 import os
 from typing import TypedDict
@@ -18,7 +17,7 @@ class AgentState(TypedDict):
     study_links: str
     topic: str
 
-class ManagerAgent:
+class AssistantAgent:
 
     def __init__(self):
 
