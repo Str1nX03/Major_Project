@@ -1,4 +1,3 @@
-from src.agents.manager_agent import ManagerAgent
 from src.utils import get_llm
 from src.logger import logging
 from src.exception import CustomException
@@ -24,11 +23,28 @@ class PlannerAgent:
             topic = "general",
             api_key = os.getenv("TAVILY_API_KEY")
         )]
+        
+    def _get_links_info(self, state: AgentState) -> dict:
+
+        pass
 
     def _build_graph(self):
 
         pass
 
-    def run(self, instructions: dict):
+    def run(self, instructions: str):
 
-        pass
+        try: 
+            
+            logging.info("Running Planning Agent...")
+
+            # initial_state = {"instructions": instructions}
+            # final_state = self.graph.invoke(input = initial_state)
+
+            logging.info("Planning Agent's work Finished...")
+
+            return "I got the instructions"
+
+        except Exception as e:
+
+            raise CustomException(e, sys)

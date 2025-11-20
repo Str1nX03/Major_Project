@@ -4,6 +4,7 @@ from src.exception import CustomException
 from langgraph.graph import StateGraph, END, START
 from langchain_tavily import TavilySearch
 from langchain_core.messages import SystemMessage
+from src.agents.planning_agent import PlannerAgent
 import sys
 import os
 from typing import TypedDict
@@ -58,7 +59,7 @@ class ManagerAgent:
 
             prompt = f"""
 
-            You are a teacher. Your task is to provide the instructions to the user for a particular topic.
+            You are a manager and a teacher. Your task is to provide the instructions to the user for a particular topic.
             You will give a general idea about the topic like how difficult it is and what are the pre-requisites to study the topic.
             You will also give a brief introduction on this topic to the user.
             
@@ -73,6 +74,7 @@ class ManagerAgent:
             {study_links}
 
             So provide the links of the study materials and intro to the study materials as well along with the general intro to the topic.
+            Also add tips for learning the topic.
 
             """
 
@@ -107,17 +109,17 @@ class ManagerAgent:
             3. The standard that the user currently is in with respect to Indian standard (School) :- {standard}
             4. The study materials and general intro provided for the user:- {study_links}
             5. The general intro provided for the user: {topic_intro}
+            
+            Give explicit prompt for the planning agent only, the agent should plan the lessons step by step and in comprehensive way so that even user will get time to be comfortable with the topics.
+            Your instructions should be in separate sections like this:-
+            
+            1. This section will contain the topic intro: {topic_intro}
+            2. This section will contain general info about the user's requests i.e. topic: {topic}, subject: {subject}, standard: {standard}
+            3. This section must include the study links url ({study_links}) for the planning agent.
+            4. This section will contain the pre requisites and difficulty level for the topic.
+            5. This section will contain explicit prompt for the planning agent, the agent should plan the lessons step by step and in comprehensive way (35 - 50 lessons) so that even user will get time to be comfortable with the topics.
 
-            You will tell the planning agent to plan for the lessons in such a way that the user will be able to understand the topic from scratch.
-            The planning should start with the roots and fundamental of the topic.
-            It should also include the prerequisite for the topic which is needed to be taught to the user to make the user understand the topics better.
-            It should plan the lessons in step by step manner like lectures for the lessons.
-            Lessons are to be taught in such a way that after completing each lesson, next lesson can be started based on the planned lessons like each level of a game.
-            You must include the study links url ({study_links}) so that the user will be able to click on the links and get to the study materials..
-            The planning should also include the study materials and general intro to the topic.
-            Give the agents instructions to make the lessons plan as comprehensive as they want to make the user learning pace a bit slow and more detailed so that the user will get time to be comfortable with the topics.
-            Prompt the agents to make the lessons from 10-50 lessons big based on the difficulty of the topic.
-
+            You must only give the prompt for the planning agent and you do not have to plan the lessons.
 
             """
 
@@ -165,8 +167,10 @@ class ManagerAgent:
 
             initial_state = {"standard": standard, "subject": subject, "topic": topic}
             final_state = self.graph.invoke(input = initial_state)
+            planning_agent = PlannerAgent()
+            sended_instructions = planning_agent.run(final_state["instructions"])
 
-            logging.info("Manager Agent's work Finished and instructions are ready to be sent to other agents...")
+            logging.info("Manager Agent's work Finished and instructions are sent to planning agent...")
 
             return final_state
 
