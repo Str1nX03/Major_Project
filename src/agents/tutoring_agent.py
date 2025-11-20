@@ -22,11 +22,6 @@ class TutoringAgent:
 
         self.llm = get_llm()
         self.graph = self._build_graph()
-        self.tool = [TavilySearch(
-            max_results = 3,
-            topic = "general",
-            api_key = os.getenv("TAVILY_API_KEY")
-        )]
 
     def _build_graph(self):
 
