@@ -150,6 +150,25 @@ class AssistantAgent:
 
             response = self.tool[0].invoke(prompt)
 
+            # --- BUG FIX: Ensure response is a string ---
+            # The search tool might return a dict or list. We must convert it to a string
+            # so that .split('\n') works in the template.
+            if not isinstance(response, str):
+                if isinstance(response, list):
+                    # If it's a list (e.g., list of search results), join them
+                    items = []
+                    for item in response:
+                        if isinstance(item, dict):
+                            # Extract useful info if it's a dict
+                            items.append(f"{item.get('url', str(item))}")
+                        else:
+                            items.append(str(item))
+                    response = "\n".join(items)
+                else:
+                    # If it's a dict or other object, cast to string
+                    response = str(response)
+            # ---------------------------------------------
+
             logging.info("Agent has generated study materials and general intro for the user...")
 
             return {"study_links": response}
