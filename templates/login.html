@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if mode == 'register' %}Create Account{% else %}Sign In{% endif %} - AI Learning Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="gradient-bg" aria-hidden="true"></div>
+    <div class="particles" aria-hidden="true"></div>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Auth Container -->
+    <main id="main-content" class="auth-container">
+        <div class="auth-card">
+            <h2 class="auth-title">
+                {% if mode == 'register' %}
+                    Create Your Account
+                {% else %}
+                    Welcome Back
+                {% endif %}
+            </h2>
+            
+            <form method="POST" action="{% if mode == 'register' %}{{ url_for('register') }}{% else %}{{ url_for('login') }}{% endif %}">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="{% if mode == 'register' %}new-password{% else %}current-password{% endif %}"
+                    >
+                </div>
+                
+                <button type="submit" class="btn {% if mode == 'register' %}btn-primary{% else %}btn-secondary{% endif %}" style="width: 100%; margin-top: 1rem;">
+                    {% if mode == 'register' %}
+                        Create Account
+                    {% else %}
+                        Sign In
+                    {% endif %}
+                </button>
+            </form>
+            
+            <div class="auth-toggle">
+                {% if mode == 'register' %}
+                    Already have an account? 
+                    <a href="{{ url_for('login') }}">Sign in here</a>
+                {% else %}
+                    Don't have an account? 
+                    <a href="{{ url_for('register') }}">Create one here</a>
+                {% endif %}
+            </div>
+            
+            <div class="auth-toggle" style="margin-top: 2rem;">
+                <a href="{{ url_for('home') }}" style="color: var(--light-grey);">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
