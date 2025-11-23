@@ -53,18 +53,24 @@
                     </p>
                     <div>
                         {% if links %}
-                            {% set link_list = links.split('\n') %}
-                            {% for link in link_list %}
-                                {% if link.strip() %}
-                                    {% if 'http' in link %}
-                                        <a href="{{ link.strip() }}" target="_blank" class="study-link">
-                                            📚 Resource Link
-                                        </a>
-                                    {% else %}
-                                        <span style="color: var(--light-grey); display: block; margin: 0.5rem 0;">{{ link }}</span>
+                            {# Defensive check: Ensure links is a string before splitting #}
+                            {% if links is string %}
+                                {% set link_list = links.split('\n') %}
+                                {% for link in link_list %}
+                                    {% if link.strip() %}
+                                        {% if 'http' in link %}
+                                            <a href="{{ link.strip() }}" target="_blank" class="study-link">
+                                                📚 Resource Link
+                                            </a>
+                                        {% else %}
+                                            <span style="color: var(--light-grey); display: block; margin: 0.5rem 0;">{{ link }}</span>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                {# Fallback if links is not a string (e.g. dict/list) #}
+                                <span style="color: var(--light-grey); display: block; overflow-wrap: break-word;">{{ links }}</span>
+                            {% endif %}
                         {% else %}
                             <p style="color: var(--light-grey);">No study links available</p>
                         {% endif %}

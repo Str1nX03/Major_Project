@@ -75,6 +75,15 @@ class AssistantAgent:
             So provide the links of the study materials and intro to the study materials as well along with the general intro to the topic.
             Also add tips for learning the topic.
 
+            IMPORTANT FORMATTING INSTRUCTIONS:
+            - The output MUST be in HTML format.
+            - Use <h3> tags for main headings.
+            - Use <b> tags for bold text (do not use asterisks **).
+            - Use <p> tags for paragraphs.
+            - Use <ul> and <li> tags for lists.
+            - Ensure the content is visually structured and easy to read.
+            - Do NOT use Markdown syntax (like #, *, -).
+
             """
 
             response = self.llm_lite.invoke([SystemMessage(content=prompt)])
@@ -149,6 +158,19 @@ class AssistantAgent:
             """
 
             response = self.tool[0].invoke(prompt)
+
+            # Defensive check: Ensure response is a string
+            if not isinstance(response, str):
+                if isinstance(response, list):
+                    items = []
+                    for item in response:
+                        if isinstance(item, dict):
+                            items.append(f"{item.get('url', str(item))}")
+                        else:
+                            items.append(str(item))
+                    response = "\n".join(items)
+                else:
+                    response = str(response)
 
             logging.info("Agent has generated study materials and general intro for the user...")
 

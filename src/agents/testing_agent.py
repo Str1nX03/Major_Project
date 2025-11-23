@@ -41,15 +41,26 @@ class TestingAgent:
             lesson_list = list(lessons.keys())
             lessons_length = len(lesson_list)
 
+            # Common instructions for HTML formatting
+            formatting_instructions = """
+            IMPORTANT FORMATTING INSTRUCTIONS:
+            - Provide the output in strictly HTML format.
+            - Use <b> for questions and headers (e.g., <b>Question 1:</b>).
+            - Use <p> for the question body and solution text.
+            - Use <br> for line breaks where necessary.
+            - Do NOT use asterisks (*) or markdown.
+            - Make the solution and revision notes distinct using <p> tags.
+            """
+
             for lesson in lesson_list[:lessons_length//2]:
 
-                prompt = f"This is the lesson intro: {lesson}. Generate 1 test question as user's question paper along with its solutions based on those lessons in such a way that the lesson can be revised by the user after the test."
+                prompt = f"This is the lesson intro: {lesson}. Generate 1 test question as user's question paper along with its solutions based on those lessons in such a way that the lesson can be revised by the user after the test. {formatting_instructions}"
                 test = self.llm_lite.invoke(prompt)
                 tests[lesson] = test.content
 
             for lesson in lesson_list[lessons_length//2:]:
 
-                prompt = f"This is the lesson intro: {lesson}. Generate 1 test question as user's question paper along with its solutions based on those lessons in such a way that the lesson can be revised by the user after the test."
+                prompt = f"This is the lesson intro: {lesson}. Generate 1 test question as user's question paper along with its solutions based on those lessons in such a way that the lesson can be revised by the user after the test. {formatting_instructions}"
                 test = self.llm.invoke(prompt)
                 tests[lesson] = test.content
 

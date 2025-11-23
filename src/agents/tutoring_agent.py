@@ -74,6 +74,7 @@ class TutoringAgent:
             logging.info("Planning Agent is generating lessons...")
 
             plannings = state["plannings"]
+            topic = state["topic"]
             lessons = {}
             lesson_list = plannings.split("\n")
 
@@ -83,6 +84,15 @@ class TutoringAgent:
                 
                 You must generate comprehensive and detailed lesson contents for the lesson: {lesson}
                 Make it in such a way that nothing else will be needed for the topic.
+                Also if the topic: {topic} is related to or closely depends upon mathematics, then make the lessons more mathematical and less theory based.
+
+                IMPORTANT FORMATTING INSTRUCTIONS:
+                - The output MUST be in HTML format.
+                - Use <h4> for section headers.
+                - Use <b> for bold text (do NOT use asterisks like **text**).
+                - Use <p> for paragraphs.
+                - Use <ul> and <li> for lists.
+                - Do NOT use Markdown.
                 
                 """
                 response = self.llm.invoke(prompt)
