@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Platform - Master Any Topic</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="gradient-bg" aria-hidden="true"></div>
+    <div class="particles" aria-hidden="true"></div>
+    
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section" aria-label="Main hero section">
+            <div class="hero-content">
+                <h1 class="hero-title">Master Any Topic with Agentic AI</h1>
+                <p class="hero-subtitle">
+                    Experience personalized learning powered by intelligent AI agents that create customized lessons, 
+                    comprehensive study materials, and adaptive quizzes tailored just for you.
+                </p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Start Learning</a>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features-section" aria-labelledby="features-heading">
+        <h2 id="features-heading" class="text-center">How Our AI Agents Help You Learn</h2>
+        <p class="text-center" style="color: var(--light-grey); margin-bottom: 2rem;">
+            Three specialized AI agents work together to create your perfect learning experience
+        </p>
+        
+        <div class="features-grid">
+            <!-- Assistant Agent -->
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>Assistant Agent</h3>
+                <p>
+                    Your personal learning guide analyzes your topic and provides curated study materials, 
+                    video resources, and a comprehensive introduction to get you started on the right path.
+                </p>
+                <ul style="color: var(--light-grey); margin-top: 1rem; list-style: none;">
+                    <li>✓ Topic analysis & prerequisites</li>
+                    <li>✓ Curated study resources</li>
+                    <li>✓ Difficulty assessment</li>
+                </ul>
+            </div>
+            
+            <!-- Tutoring Agent -->
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Tutoring Agent</h3>
+                <p>
+                    Generates 35-50 comprehensive lessons tailored to your level and subject. 
+                    Each lesson is detailed, structured, and designed to build your knowledge step by step.
+                </p>
+                <ul style="color: var(--light-grey); margin-top: 1rem; list-style: none;">
+                    <li>✓ Step-by-step lesson planning</li>
+                    <li>✓ Comprehensive content</li>
+                    <li>✓ Progressive difficulty</li>
+                </ul>
+            </div>
+            
+            <!-- Testing Agent -->
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3>Testing Agent</h3>
+                <p>
+                    Creates targeted quizzes for each lesson to reinforce your learning. 
+                    Questions include detailed solutions to help you understand concepts deeply.
+                </p>
+                <ul style="color: var(--light-grey); margin-top: 1rem; list-style: none;">
+                    <li>✓ Lesson-specific quizzes</li>
+                    <li>✓ Detailed solutions</li>
+                    <li>✓ Knowledge reinforcement</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="text-center" style="margin-top: 4rem;">
+            <h2>Ready to Transform Your Learning?</h2>
+            <p style="color: var(--light-grey); margin-bottom: 2rem;">
+                Join thousands of learners mastering new topics with AI-powered education
+            </p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary" style="margin-right: 1rem;">Get Started Free</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Sign In</a>
+        </div>
+        </section>
+    </main>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
