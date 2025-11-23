@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import json
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,16 +16,32 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "super_secret_dev_key")
 
 # --- Database Config ---
-# This creates a 'users.db' file in your project directory
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- Database Model ---
+# --- Database Models ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
+    # Relationship to access courses easily
+    courses = db.relationship('Course', backref='author', lazy=True)
+
+class Course(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    topic = db.Column(db.String(150), nullable=False)
+    subject = db.Column(db.String(150), nullable=False)
+    standard = db.Column(db.Integer, nullable=False)
+    
+    # Storing large text content
+    intro = db.Column(db.Text, nullable=True)
+    links = db.Column(db.Text, nullable=True)
+    
+    # Storing Dicts as JSON strings
+    lessons_json = db.Column(db.Text, nullable=True) 
+    tests_json = db.Column(db.Text, nullable=True)
 
 # Initialize Database within Application Context
 with app.app_context():
@@ -104,12 +121,44 @@ def logout():
 
 @app.route('/dashboard')
 def dashboard():
-    """After Login - User Inputs Topic"""
+    """After Login - User Inputs Topic & Sees History"""
     if not check_auth():
         flash("Please login to access the dashboard.", "error")
         return redirect(url_for('login'))
     
-    return render_template('dashboard.html', user=session.get('username'))
+    # Fetch user's previous courses (Newest first)
+    user_courses = Course.query.filter_by(user_id=session['user_id']).order_by(Course.id.desc()).all()
+    
+    return render_template('dashboard.html', user=session.get('username'), courses=user_courses)
+
+@app.route('/course/<int:course_id>')
+def view_course(course_id):
+    """View a saved course without regenerating"""
+    if not check_auth():
+        flash("Please login.", "error")
+        return redirect(url_for('login'))
+    
+    course = Course.query.get_or_404(course_id)
+    
+    # Ensure user owns this course
+    if course.user_id != session['user_id']:
+        flash("Unauthorized access.", "error")
+        return redirect(url_for('dashboard'))
+    
+    # Deserialize JSON strings back to Dicts
+    lessons = json.loads(course.lessons_json) if course.lessons_json else {}
+    tests = json.loads(course.tests_json) if course.tests_json else {}
+    
+    return render_template(
+        'product.html',
+        topic=course.topic,
+        subject=course.subject,
+        standard=course.standard,
+        intro=course.intro,
+        links=course.links,
+        lessons=lessons,
+        tests=tests
+    )
 
 @app.route('/product', methods=['POST'])
 def product():
@@ -126,6 +175,19 @@ def product():
     if not all([topic, subject, standard]):
         flash("All fields are required.", "error")
         return redirect(url_for('dashboard'))
+
+    # --- CHECK HISTORY FIRST ---
+    # If exact same request exists for this user, load it instead of generating
+    existing_course = Course.query.filter_by(
+        user_id=session['user_id'],
+        topic=topic,
+        subject=subject,
+        standard=int(standard)
+    ).first()
+    
+    if existing_course:
+        flash("Loaded course from your history!", "success")
+        return redirect(url_for('view_course', course_id=existing_course.id))
 
     try:
         # --- AGENT 1: ASSISTANT AGENT ---
@@ -144,6 +206,22 @@ def product():
         # --- AGENT 3: TESTING AGENT ---
         tester = TestingAgent()
         tests = tester.run(lessons)
+        
+        # --- SAVE TO DATABASE ---
+        new_course = Course(
+            user_id=session['user_id'],
+            topic=topic,
+            subject=subject,
+            standard=int(standard),
+            intro=topic_intro,
+            links=study_links,
+            lessons_json=json.dumps(lessons), # Serialize dict to string
+            tests_json=json.dumps(tests)      # Serialize dict to string
+        )
+        db.session.add(new_course)
+        db.session.commit()
+        
+        flash("Course generated and saved to your history!", "success")
 
         return render_template(
             'product.html',

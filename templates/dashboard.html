@@ -91,7 +91,7 @@
                         Generate My Course
                     </button>
                     
-                    <!-- Old Ideas Button (Kept for compatibility, can be removed if preferred) -->
+                    <!-- Old Ideas Button (Kept for compatibility) -->
                     <button type="button" id="ideas-btn" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid var(--light-grey); color: var(--light-grey); opacity: 0.7;">
                         💡 General Inspiration
                     </button>
@@ -116,6 +116,32 @@
                 </div>
             </div>
         
+        <!-- HISTORY SECTION -->
+        {% if courses %}
+        <div class="glass-card mt-4" style="max-width: 800px; margin: 4rem auto 0;">
+            <h3 class="text-center mb-3">Your Learning History</h3>
+            <p class="text-center" style="color: var(--light-grey); margin-bottom: 2rem;">Resume where you left off</p>
+            
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                {% for course in courses %}
+                    <div class="catalog-item" style="text-align: left; position: relative; padding-bottom: 3rem;">
+                        <h4 style="color: var(--white); margin-bottom: 0.5rem; font-size: 1.1rem;">{{ course.topic }}</h4>
+                        <p style="font-size: 0.9rem; color: var(--light-grey); margin-bottom: 0;">
+                            {{ course.subject }}
+                        </p>
+                        <span style="font-size: 0.8rem; color: var(--electric-blue);">
+                            Grade {{ course.standard }}
+                        </span>
+                        
+                        <a href="{{ url_for('view_course', course_id=course.id) }}" class="btn btn-secondary" style="position: absolute; bottom: 1rem; right: 1rem; padding: 5px 15px; font-size: 0.8rem;">
+                            Resume ➜
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Info Section -->
         <div class="glass-card mt-4" style="max-width: 800px; margin: 4rem auto 0;">
             <h3 class="text-center mb-3">What to Expect</h3>
