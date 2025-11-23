@@ -41,18 +41,14 @@
                 </p>
                 
                 <form id="course-form" method="POST" action="{{ url_for('product') }}" aria-labelledby="form-heading">
-                    <div class="form-group">
-                        <label for="topic" class="form-label">Topic</label>
-                        <input 
-                            type="text" 
-                            id="topic" 
-                            name="topic" 
-                            class="form-input" 
-                            placeholder="e.g., Quantum Physics, Machine Learning, Ancient History"
-                            required
-                        >
-                    </div>
                     
+                    <!-- Browse Button -->
+                    <div class="text-center mb-3">
+                        <button type="button" id="browse-catalog-btn" class="btn btn-secondary" style="width: 100%; padding: 10px; font-size: 0.9rem; border: 1px dashed var(--electric-blue); background: rgba(41, 121, 255, 0.1);">
+                            📖 Browse Subject & Topic Catalog
+                        </button>
+                    </div>
+
                     <div class="form-group">
                         <label for="subject" class="form-label">Subject</label>
                         <input 
@@ -61,6 +57,18 @@
                             name="subject" 
                             class="form-input" 
                             placeholder="e.g., Physics, Computer Science, History"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="topic" class="form-label">Topic</label>
+                        <input 
+                            type="text" 
+                            id="topic" 
+                            name="topic" 
+                            class="form-input" 
+                            placeholder="e.g., Quantum Physics, Machine Learning"
                             required
                         >
                     </div>
@@ -81,6 +89,11 @@
                     
                     <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
                         Generate My Course
+                    </button>
+                    
+                    <!-- Old Ideas Button (Kept for compatibility, can be removed if preferred) -->
+                    <button type="button" id="ideas-btn" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid var(--light-grey); color: var(--light-grey); opacity: 0.7;">
+                        💡 General Inspiration
                     </button>
                 </form>
             </div>
@@ -123,7 +136,51 @@
                     <p style="color: var(--light-grey); font-size: 0.9rem;">Test your knowledge</p>
                 </div>
             </div>
+        </div>
         </main>
+    </div>
+    
+    <!-- Original Ideas Modal (Preserved) -->
+    <div id="ideas-modal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <button class="close-modal" aria-label="Close modal">&times;</button>
+            <h2 style="text-align: center; margin-bottom: 0.5rem;">Explore Learning Possibilities</h2>
+            <div class="topic-grid">
+                <div class="topic-category"><h4>🧪 Science & Math</h4><ul class="topic-list"><li>Quantum Mechanics</li><li>Organic Chemistry</li></ul></div>
+                <div class="topic-category"><h4>💻 Tech</h4><ul class="topic-list"><li>Python</li><li>Machine Learning</li></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW CATALOG MODAL -->
+    <div id="catalog-modal" class="modal-overlay">
+        <div class="modal-content glass-card" style="max-width: 600px;">
+            <button class="close-catalog-modal close-modal" aria-label="Close modal">&times;</button>
+            
+            <!-- Step 1: Subject Selection -->
+            <div id="catalog-step-subject">
+                <h2 style="text-align: center; color: var(--electric-blue);">Select a Subject</h2>
+                <p class="text-center" style="color: var(--light-grey); margin-bottom: 1.5rem;">Choose a domain to explore</p>
+                <div class="catalog-grid" id="subject-list">
+                    <!-- Subjects injected via JS -->
+                </div>
+            </div>
+
+            <!-- Step 2: Topic Selection -->
+            <div id="catalog-step-topic" class="hidden">
+                <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                    <button id="catalog-back-btn" class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.8rem; margin-right: 1rem;">← Back</button>
+                    <h2 style="margin: 0; font-size: 1.5rem; color: var(--neon-purple);">Select Topic</h2>
+                </div>
+                <p id="selected-subject-display" style="color: var(--light-grey); margin-bottom: 1rem; border-bottom: 1px solid var(--light-grey); padding-bottom: 0.5rem;">
+                    Subject: <span></span>
+                </p>
+                <div class="catalog-grid" id="topic-list">
+                    <!-- Topics injected via JS -->
+                </div>
+            </div>
+
+        </div>
     </div>
     
     <script src="{{ url_for('static', filename='script.js') }}"></script>

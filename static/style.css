@@ -732,12 +732,6 @@ p {
     }
 }
 
-.quiz-title {
-    color: var(--electric-blue);
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
 /* Floating Action Button */
 .fab {
     position: fixed;
@@ -768,6 +762,142 @@ p {
 
 .fab:hover {
     transform: scale(1.1);
+}
+
+/* ===================================
+   MODAL STYLES (New)
+   =================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: rgba(28, 28, 30, 0.95);
+    border: 1px solid var(--neon-purple);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(138, 43, 226, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--light-grey);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--crimson-red);
+}
+
+/* Custom Scrollbar for Modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.3);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--neon-purple);
+    border-radius: 4px;
+}
+
+/* Topic Grid in Modal (Used for old modal) */
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.topic-category h4 {
+    color: var(--electric-blue);
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(41, 121, 255, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.topic-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.topic-list li {
+    color: var(--light-grey);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.topic-list li::before {
+    content: '▹';
+    color: var(--neon-purple);
+    margin-right: 8px;
+}
+
+/* NEW: Catalog Styles (Card based selection) */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.catalog-item {
+    background: rgba(41, 121, 255, 0.1);
+    border: 1px solid rgba(41, 121, 255, 0.3);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--white);
+    font-weight: 500;
+}
+
+.catalog-item:hover {
+    background: var(--electric-blue);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(41, 121, 255, 0.4);
 }
 
 /* ===================================
@@ -808,6 +938,10 @@ p {
         right: 1rem;
         font-size: 0.9rem;
         padding: 12px 20px;
+    }
+    
+    .topic-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -857,6 +991,11 @@ p {
     
     .feature-card {
         transform: none !important;
+    }
+    
+    .modal-content {
+        transform: none !important;
+        transition: none !important;
     }
 }
 
