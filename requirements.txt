@@ -6,3 +6,4 @@ langgraph
 flask
 ipykernel
 langchain_tavily
+flask_sqlalchemy
