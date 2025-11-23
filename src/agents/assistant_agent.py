@@ -1,4 +1,4 @@
-from src.utils import get_llm
+from src.utils import get_llm_1, get_llm_lite_1
 from src.logger import logging
 from src.exception import CustomException
 from langgraph.graph import StateGraph, END, START
@@ -21,7 +21,8 @@ class AssistantAgent:
 
     def __init__(self):
 
-        self.llm = get_llm()
+        self.llm_lite = get_llm_lite_1()
+        self.llm = get_llm_1()
         self.graph = self._build_graph()
         self.tool = [TavilySearch(
             max_results = 5,
@@ -76,7 +77,7 @@ class AssistantAgent:
 
             """
 
-            response = self.llm.invoke([SystemMessage(content=prompt)])
+            response = self.llm_lite.invoke([SystemMessage(content=prompt)])
 
             logging.info("Agent has generated initial contents for the user...")
 
