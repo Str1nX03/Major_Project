@@ -1,11 +1,9 @@
-from src.utils import get_llm
+from src.utils import get_llm_1, get_llm_lite_1
 from src.logger import logging
 from src.exception import CustomException
 from langgraph.graph import StateGraph, END, START
-from langchain_tavily import TavilySearch
 from typing import TypedDict
 import sys
-import os
 
 class AgentState(TypedDict):
 
@@ -20,7 +18,8 @@ class TutoringAgent:
 
     def __init__(self):
 
-        self.llm = get_llm()
+        self.llm_lite = get_llm_lite_1()
+        self.llm = get_llm_1()
         self.graph = self._build_graph()
 
     def _build_graph(self):
@@ -55,11 +54,10 @@ class TutoringAgent:
             You must only generate the lessons and mark numbers to the lessons chronologically and in a step by step manner.
             Dont write literally anything else, just write the lesson number, lesson title, all the topics we will learn in that specific lesson and thats it.
             Just list down lessons in only this manner, no need to write anything else.
-            Give 2 lines of gap after giving each lesson intro and in the same manner do that with every lesson from number 1 to end.
 
             """
 
-            response = self.llm.invoke(prompt)
+            response = self.llm_lite.invoke(prompt)
 
             logging.info("Planning Agent has generated lesson's planning...")
 
@@ -77,11 +75,16 @@ class TutoringAgent:
 
             plannings = state["plannings"]
             lessons = {}
-            lesson_list = plannings.split("\n\n")
+            lesson_list = plannings.split("\n")
 
             for lesson in lesson_list:
     
-                prompt = f"You must generate comprehensive lesson contents for the lesson: {lesson}"
+                prompt = f"""
+                
+                You must generate comprehensive and detailed lesson contents for the lesson: {lesson}
+                Make it in such a way that nothing else will be needed for the topic.
+                
+                """
                 response = self.llm.invoke(prompt)
                 lessons[lesson] = response.content     
 
