@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Learning Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="gradient-bg" aria-hidden="true"></div>
+    <div class="particles" aria-hidden="true"></div>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1 class="welcome-text">Welcome, {{ user }}!</h1>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+        </header>
+        
+        <!-- Main Form -->
+        <main id="main-content" class="dashboard-form">
+            <div class="glass-card">
+                <h2 class="text-center mb-3" id="form-heading">Create Your Learning Journey</h2>
+                <p class="text-center mb-4" style="color: var(--light-grey);">
+                    Tell us what you want to learn, and our AI agents will create a personalized course just for you
+                </p>
+                
+                <form id="course-form" method="POST" action="{{ url_for('product') }}" aria-labelledby="form-heading">
+                    <div class="form-group">
+                        <label for="topic" class="form-label">Topic</label>
+                        <input 
+                            type="text" 
+                            id="topic" 
+                            name="topic" 
+                            class="form-input" 
+                            placeholder="e.g., Quantum Physics, Machine Learning, Ancient History"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input 
+                            type="text" 
+                            id="subject" 
+                            name="subject" 
+                            class="form-input" 
+                            placeholder="e.g., Physics, Computer Science, History"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="standard" class="form-label">Standard/Grade (Indian System)</label>
+                        <input 
+                            type="number" 
+                            id="standard" 
+                            name="standard" 
+                            class="form-input" 
+                            placeholder="Enter your grade (1-12)"
+                            min="1" 
+                            max="12"
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        Generate My Course
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Loading State -->
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <h3 class="loading-text">Agents are collaborating...</h3>
+                <p style="color: var(--light-grey); margin-top: 1rem;">
+                    This may take up to 60 seconds as our AI agents:
+                </p>
+                <ul style="color: var(--light-grey); text-align: left; max-width: 400px; margin: 1rem auto;">
+                    <li>🔍 Research your topic and gather resources</li>
+                    <li>📝 Plan comprehensive lessons</li>
+                    <li>✍️ Generate detailed content</li>
+                    <li>🧪 Create quizzes and tests</li>
+                </ul>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        
+        <!-- Info Section -->
+        <div class="glass-card mt-4" style="max-width: 800px; margin: 4rem auto 0;">
+            <h3 class="text-center mb-3">What to Expect</h3>
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+                    <h4 style="color: var(--neon-purple); font-size: 1.1rem;">35-50 Lessons</h4>
+                    <p style="color: var(--light-grey); font-size: 0.9rem;">Comprehensive coverage</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔗</div>
+                    <h4 style="color: var(--electric-blue); font-size: 1.1rem;">Study Resources</h4>
+                    <p style="color: var(--light-grey); font-size: 0.9rem;">Curated materials & videos</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                    <h4 style="color: var(--neon-purple); font-size: 1.1rem;">Practice Quizzes</h4>
+                    <p style="color: var(--light-grey); font-size: 0.9rem;">Test your knowledge</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
