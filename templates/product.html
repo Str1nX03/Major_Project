@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic }} - AI Learning Course</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="gradient-bg" aria-hidden="true"></div>
+    <div class="particles" aria-hidden="true"></div>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Product Container -->
+    <div class="product-container">
+        <main id="main-content">
+            <!-- Header -->
+            <header class="product-header">
+                <h1>{{ topic }}</h1>
+                <p style="color: var(--light-grey); font-size: 1.1rem;">
+                    {{ subject }} - Standard {{ standard }}
+                </p>
+            </header>
+            
+            <!-- Product Layout -->
+            <div class="product-layout">
+            <!-- Left Column: Overview & Study Links -->
+            <div class="overview-section">
+                <div class="glass-card">
+                    <h2>Course Overview</h2>
+                    <div style="margin-top: 1.5rem; line-height: 1.8;">
+                        {{ intro|safe }}
+                    </div>
+                </div>
+                
+                <div class="glass-card mt-4">
+                    <h3 style="color: var(--electric-blue);">Study Resources</h3>
+                    <p style="color: var(--light-grey); margin-bottom: 1rem;">
+                        Curated materials to supplement your learning
+                    </p>
+                    <div>
+                        {% if links %}
+                            {% set link_list = links.split('\n') %}
+                            {% for link in link_list %}
+                                {% if link.strip() %}
+                                    {% if 'http' in link %}
+                                        <a href="{{ link.strip() }}" target="_blank" class="study-link">
+                                            📚 Resource Link
+                                        </a>
+                                    {% else %}
+                                        <span style="color: var(--light-grey); display: block; margin: 0.5rem 0;">{{ link }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: var(--light-grey);">No study links available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Lessons & Quizzes -->
+            <div class="lessons-section" aria-label="Course lessons">
+                <h2 class="mb-3" id="lessons-heading">Your Learning Path</h2>
+                <p style="color: var(--light-grey); margin-bottom: 2rem;">
+                    Click on any lesson to expand and view the content. Each lesson includes a quiz to test your understanding.
+                </p>
+                
+                {% if lessons %}
+                    {% for lesson_title, lesson_content in lessons.items() %}
+                        <div class="lesson-card" style="--index: {{ loop.index0 }}">
+                            <div class="lesson-header">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1.1rem;">{{ lesson_title }}</h3>
+                                </div>
+                                <span class="lesson-toggle">▼</span>
+                            </div>
+                            <div class="lesson-content">
+                                <div style="color: var(--light-grey); line-height: 1.8;">
+                                    {{ lesson_content|safe }}
+                                </div>
+                                
+                                <!-- Quiz Section -->
+                                {% if tests and lesson_title in tests %}
+                                    <div class="quiz-section">
+                                        <h4 class="quiz-title">📝 Practice Quiz</h4>
+                                        <div style="color: var(--light-grey); line-height: 1.8;">
+                                            {{ tests[lesson_title]|safe }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="glass-card text-center">
+                        <p style="color: var(--light-grey);">No lessons available yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+            </div>
+        </main>
+        
+        <!-- Floating Action Button -->
+        <a href="{{ url_for('dashboard') }}" class="fab">
+            + Create New Course
+        </a>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
